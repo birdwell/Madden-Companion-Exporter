@@ -1,0 +1,22 @@
+{
+  "name": "madden_companion_exporter",
+  "version": "1.0.0",
+  "description": "Gets data from the companion app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "gulp && node ./dist/all.js"
+  },
+  "author": "Josh Birdwell",
+  "license": "ISC",
+  "dependencies": {
+    "babel-preset-latest": "^6.16.0",
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "firebase-admin": "^4.0.3",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-sourcemaps": "^2.2.0"
+  }
+}
