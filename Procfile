@@ -1,1 +1,1 @@
-web: gulp && node ./dist/all.js
+web: node app.js

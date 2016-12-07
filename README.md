@@ -25,7 +25,7 @@ npm run start
 Go here: http://firebase.google.com/ and create an account or login.
 Next, create an application.
 
-### Go into the ./src/app.js file
+### Go into the app.js file
 Complete the todos
 Commit the changes
 ```
