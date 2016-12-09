@@ -30,7 +30,7 @@ app.post('/*', function(req, res) {
   const db = admin.database();
   const ref = db.ref();
   const dataRef= ref.child("data");
-
+  const {body} = req;
   // Change what is set to the database here
   // Rosters are in the body under rosterInfoList
   const newDataRef = dataRef.push();
