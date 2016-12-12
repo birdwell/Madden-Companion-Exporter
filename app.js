@@ -37,7 +37,7 @@ app.post('/*', function(req, res) {
     data: (req && req.body) || ''
   });
 
-  return res.send('Got a POST request');
+  res.send('Got a POST request');
 });
 
 app.listen(app.get('port'), function() { console.log('Madden Companion Exporter is running on port', app.get('port')) });
