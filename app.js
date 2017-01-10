@@ -6,7 +6,7 @@ const app = express();
 
 // TODO: Enter the path to your service account json file
 // Need help with this step go here: https://firebase.google.com/docs/admin/setup
-const serviceAccount = require("./REPLACE_WITH_SERIVCE_ACCOUNT.json");
+const serviceAccount = require("http://www.realballersleague.com/js/coaches-corner-firebase-adminsdk-9nl7n-fd76aee561.json");
 
 // TODO: Enter your database url from firebase
 admin.initializeApp({
