@@ -21,6 +21,10 @@ app.use(express.static(__dirname + '/dist'));
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 app.get('/', function(req, res) {
   return res.send('Madden Data')
 });
@@ -50,7 +54,6 @@ app.post('/:platform/:leagueId/standings', (req, res) => {
   });
   res.sendStatus(200);
 });
-
 
 app.post('/:platform/:leagueId/week/:weekType/:weekNumber/:dataType', (req, res) => {
   const db = admin.database();
@@ -96,7 +99,6 @@ app.post('/:platform/:leagueId/week/:weekType/:weekNumber/:dataType', (req, res)
   res.sendStatus(200);
 });
 
-
 // ROSTERS
 
 app.post('/:platform/:leagueId/freeagents/roster', (req, res) => {
@@ -122,6 +124,5 @@ app.post('/:platform/:leagueId/team/:teamId/roster', (req, res) => {
   });
   res.sendStatus(200);
 });
-
 
 app.listen(app.get('port'), function() { console.log('Madden Companion Exporter is running on port', app.get('port')) });
