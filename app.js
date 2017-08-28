@@ -18,23 +18,108 @@ app.use(express.static(__dirname + '/dist'));
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 app.get('/', function(req, res) {
   return res.send('Madden Data')
 });
 
-// This accepts all posts requests!
-app.post('/*', function(req, res) {
+app.post('/:platform/:leagueId/leagueteams', (req, res) => {
   const db = admin.database();
   const ref = db.ref();
-  const dataRef= ref.child("data");
-  // Change what is set to the database here
-  // Rosters are in the body under rosterInfoList
-  const newDataRef = dataRef.push();
-  newDataRef.set({
-    data: (req && req.body) || ''
-  });
+  const {platform, leagueId} = req.params;
+  const dataRef = ref.child(`data/${platform}/${leagueId}/leagueteams`);
+  const {body: {leagueTeamInfoList}} = req;
 
-  res.send('Got a POST request');
+  dataRef.set({
+    leagueTeamInfoList
+  });
+  res.sendStatus(200);
+});
+
+app.post('/:platform/:leagueId/standings', (req, res) => {
+  const db = admin.database();
+  const ref = db.ref();
+  const {platform, leagueId} = req.params;
+  const dataRef = ref.child(`data/${platform}/${leagueId}/standings`);
+  const {body: {teamStandingInfoList}} = req;
+
+  dataRef.set({
+    teamStandingInfoList
+  });
+  res.sendStatus(200);
+});
+
+app.post('/:platform/:leagueId/week/:weekType/:weekNumber/:dataType', (req, res) => {
+  const db = admin.database();
+  const ref = db.ref();
+  const {platform, leagueId, weekType, weekNumber, dataType} = req.params;
+  const dataRef = ref.child(`data/${platform}/${leagueId}/week/${weekType}/${weekNumber}/${dataType}`);
+
+  // method=POST path="/platform/leagueId/week/reg/1/defense"
+  // method=POST path="/platform/leagueId/week/reg/1/kicking"
+  // method=POST path="/platform/leagueId/week/reg/1/passing"
+  // method=POST path="/platform/leagueId/week/reg/1/punting"
+  // method=POST path="/platform/leagueId/week/reg/1/receiving"
+  // method=POST path="/platform/leagueId/week/reg/1/rushing"
+
+  switch(dataType) {
+    case 'schedules':
+      const {body: {gameScheduleInfoList}} = req;
+      dataRef.set({
+        gameScheduleInfoList
+      });
+      break;
+    case 'teamstats':
+      const {body: {teamStatInfoList}} = req;
+      dataRef.set({
+        teamStatInfoList
+      });
+      break;
+    case 'defense':
+      const {body: {playerDefensiveStatInfoList}} = req;
+      dataRef.set({
+        playerDefensiveStatInfoList
+      });
+      break;
+    default:
+      const {body} = req;
+      const property = `player${capitalizeFirstLetter(dataType)}StatInfoList`;
+      dataRef.set({
+        [property]: body[property] || ''
+      });
+      break;
+  }
+
+  res.sendStatus(200);
+});
+
+// ROSTERS
+
+app.post('/:platform/:leagueId/freeagents/roster', (req, res) => {
+  const db = admin.database();
+  const ref = db.ref();
+  const {platform, leagueId} = req.params;
+  const dataRef = ref.child(`data/${platform}/${leagueId}/freeagents`);
+  const {body: {rosterInfoList}} = req;
+  dataRef.set({
+    rosterInfoList
+  });
+  res.sendStatus(200);
+});
+
+app.post('/:platform/:leagueId/team/:teamId/roster', (req, res) => {
+  const db = admin.database();
+  const ref = db.ref();
+  const {platform, leagueId, teamId} = req.params;
+  const dataRef = ref.child(`data/${platform}/${leagueId}/team/${teamId}`);
+  const {body: {rosterInfoList}} = req;
+  dataRef.set({
+    rosterInfoList
+  });
+  res.sendStatus(200);
 });
 
 app.listen(app.get('port'), function() { console.log('Madden Companion Exporter is running on port', app.get('port')) });
