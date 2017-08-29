@@ -116,10 +116,10 @@ app.post('/:platform/:leagueId/freeagents/roster', (req, res) => {
   const {platform, leagueId} = req.params;
   const dataRef = ref.child(`data/${platform}/${leagueId}/freeagents`);
   const {body: {rosterInfoList}} = req;
+  res.sendStatus(202);
   dataRef.set({
     rosterInfoList
   });
-  res.sendStatus(200);
 });
 
 app.post('/:platform/:leagueId/team/:teamId/roster', (req, res) => {
@@ -128,10 +128,10 @@ app.post('/:platform/:leagueId/team/:teamId/roster', (req, res) => {
   const {platform, leagueId, teamId} = req.params;
   const dataRef = ref.child(`data/${platform}/${leagueId}/team/${teamId}`);
   const {body: {rosterInfoList}} = req;
+  res.sendStatus(202);
   dataRef.set({
     rosterInfoList
   });
-  res.sendStatus(200);
 });
 
 app.listen(app.get('port'), function() { console.log('Madden Companion Exporter is running on port', app.get('port')) });
