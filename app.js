@@ -26,6 +26,15 @@ app.get('/', function(req, res) {
   return res.send('Madden Data')
 });
 
+//Clear firebase database
+app.get('/delete', function(req, res) {
+  const db = admin.database();
+  const ref = db.ref();
+  const dataRef = ref.child(`data`);
+  dataRef.remove();
+  return res.send('Madden Data Cleared')
+});
+
 app.post('/:platform/:leagueId/leagueteams', (req, res) => {
   const db = admin.database();
   const ref = db.ref();
