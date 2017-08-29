@@ -47,6 +47,9 @@ Go to the league's export page you want. Enter in the url of your heroku app.
 The data will then be in your firebase database to do as you wish.
 Either download it or use the firebase database to power your website.
 
+### Clearing previous exports
+Clear all previous exports in your firebase db by opening the page 'http://\<yourapp\>.herokuapp.com/delete' in your web browser.
+
 ## Contributing
 
 1. Fork it!
