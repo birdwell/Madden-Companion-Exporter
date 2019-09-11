@@ -24,6 +24,10 @@ if (process.env.NODE_ENV === 'production') {
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
+app.get('*', (req, res) => {
+    res.send('Madden Companion Exporter');
+});
+
 app.post('*', (req, res) => {
   console.log(req.url);
   res.sendStatus(200);
