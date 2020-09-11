@@ -12,7 +12,7 @@ const app = express();
 
 // const serviceAccount = require("./REPLACE_WITH_SERVICE_ACCOUNT.json");
 
-// TODO: Uncomment out line 17-20
+// TODO: Uncomment out line 17-21
 // Enter your database url from firebase where it says <DATABASE_NAME> below.
 // Refer to picture for reference. It's the 2nd property.
 // admin.initializeApp({
