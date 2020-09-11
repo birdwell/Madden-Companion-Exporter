@@ -4,9 +4,11 @@ This app will export data from the Companion App to a firebase database.
 
 ## Installation
 
-Click Fork. Then copy your url path.
+Click Fork (located in the top right corner of the github repository). 
+After that click the green code button and then copy your url path.
 ```
-git clone [your git url]
+Go to terminal.
+git clone [paste your git url here]
 cd Madden-Companion-Exporter
 npm install
 ```
@@ -25,8 +27,7 @@ npm run start
 Go here: http://firebase.google.com/ and create an account or login.
 Next, create an application.
 
-### Go into the app.js file
-Complete the todos
+### Go into the app.js file & Complete the todos
 Commit the changes
 ```
 git add *
@@ -43,7 +44,8 @@ Then go ahead and do a manual deploy.
 Lastly, figure out the url to your app.
 
 ### Go to the Companion App
-Go to the league's export page you want. Enter in the url of your heroku app.
+Go to the league's export page you want. Enter in the url of your heroku app in the following format. herokuurl.herokuapp.com/yourusername
+Dont forget your username. It needs a username to match up with the app.post routes. 
 The data will then be in your firebase database to do as you wish.
 Either download it or use the firebase database to power your website.
 
