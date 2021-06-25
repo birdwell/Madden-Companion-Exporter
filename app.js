@@ -39,7 +39,7 @@ app.post('/:username/:platform/:leagueId/leagueteams', (req, res) => {
 
         teams.forEach(team => {
             const teamRef = ref.child(`data/${username}/${leagueId}/teams/${team.teamId}`);
-            teamRef.update(team);
+            teamRef.set(team);
         });
 
         res.sendStatus(200);
@@ -61,7 +61,7 @@ app.post('/:username/:platform/:leagueId/standings', (req, res) => {
             const teamRef = ref.child(
                 `data/${username}/${leagueId}/teams/${team.teamId}`
             );
-            teamRef.update(team);
+            teamRef.set(team);
         });
 
         res.sendStatus(200);
@@ -94,7 +94,7 @@ app.post(
                         `${basePath}schedules/${weekType}/${weekNumber}`
                     );
                     const { gameScheduleInfoList: schedules } = JSON.parse(body);
-                    weekRef.update(schedules);
+                    weekRef.set(schedules);
                     break;
                 }
                 case 'teamstats': {
@@ -103,7 +103,7 @@ app.post(
                         const weekRef = ref.child(
                             `${statsPath}/${weekType}/${weekNumber}/${stat.teamId}/team-stats`
                         );
-                        weekRef.update(stat);
+                        weekRef.set(stat);
                     });
                     break;
                 }
@@ -113,7 +113,7 @@ app.post(
                         const weekRef = ref.child(
                             `${statsPath}/${weekType}/${weekNumber}/${stat.teamId}/player-stats/${stat.rosterId}`
                         );
-                        weekRef.update(stat);
+                        weekRef.set(stat);
                     });
                     break;
                 }
@@ -126,7 +126,7 @@ app.post(
                         const weekRef = ref.child(
                             `${statsPath}/${weekType}/${weekNumber}/${stat.teamId}/player-stats/${stat.rosterId}`
                         );
-                        weekRef.update(stat);
+                        weekRef.set(stat);
                     });
                     break;
                 }
