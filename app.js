@@ -4,21 +4,21 @@ const admin = require('firebase-admin');
 const app = express();
 
 // TODO: Uncomment out line 13
-// Refer to Picture Example Folder for help for below instructions. (hit the gear for settings, click projecgt settings, then click service accounts)
+// Refer to Picture Example Folder for help for below instructions. (hit the gear for settings, click project settings, then click service accounts)
 // In your firebase project settings it will give you an option to "create service account".
 // This generates a service account json file. Download it, and put the file in this project. 
 // Enter the path to your service account json file below where it says "REPLACE_WITH_SERVICE_ACCOUNT"
 // If you need more help with this step go here: https://firebase.google.com/docs/admin/setup
 
-// const serviceAccount = require("./REPLACE_WITH_SERVICE_ACCOUNT.json");
+const serviceAccount = require("./reignsupreme-7.json");
 
 // TODO: Uncomment out line 17-21
 // Enter your database url from firebase where it says <DATABASE_NAME> below.
 // Refer to picture for reference. It's the 2nd property.
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount),
-//   databaseURL: "https://<DATABASE_NAME>.firebaseio.com/"
-// });
+admin.initializeApp({
+   credential: admin.credential.cert(serviceAccount),
+   databaseURL: "https://reignsupreme-7-default-rtdb.firebaseio.com/"
+ });
 
 app.set('port', (process.env.PORT || 3001));
 
