@@ -3,6 +3,8 @@ const admin = require('firebase-admin');
 
 const app = express();
 
+let cacheRosterData = null;
+
 // TODO: Uncomment out line 13
 // Refer to Picture Example Folder for help for below instructions. (hit the gear for settings, click projecgt settings, then click service accounts)
 // In your firebase project settings it will give you an option to "create service account".
@@ -25,6 +27,10 @@ app.set('port', (process.env.PORT || 3001));
 app.get('*', (req, res) => {
     res.send('Madden Companion Exporter');
 });
+
+app.get('/roster/get', (request, response) => {
+    res.send(cacheRosterData);
+})
 
 app.post('/:username/:platform/:leagueId/leagueteams', (req, res) => {
     const db = admin.database();
@@ -153,6 +159,7 @@ app.post('/:username/:platform/:leagueId/freeagents/roster', (req, res) => {
     req.on('data', chunk => {
         body += chunk.toString();
         console.info('data event:', body);
+        cacheRosterData = body;
     });
     req.on('end', () => {
         const { rosterInfoList } = JSON.parse(body);
