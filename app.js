@@ -3,6 +3,8 @@ const admin = require('firebase-admin');
 
 const app = express();
 
+// let cacheRosterData = null;
+
 // TODO: Uncomment out line 13
 // Refer to Picture Example Folder for help for below instructions. (hit the gear for settings, click projecgt settings, then click service accounts)
 // In your firebase project settings it will give you an option to "create service account".
@@ -10,15 +12,15 @@ const app = express();
 // Enter the path to your service account json file below where it says "REPLACE_WITH_SERVICE_ACCOUNT"
 // If you need more help with this step go here: https://firebase.google.com/docs/admin/setup
 
-// const serviceAccount = require("./REPLACE_WITH_SERVICE_ACCOUNT.json");
+const serviceAccount = require("./madden-companion-project-firebase-adminsdk-u16ts-0a223df9a2.json");
 
 // TODO: Uncomment out line 17-21
 // Enter your database url from firebase where it says <DATABASE_NAME> below.
 // Refer to picture for reference. It's the 2nd property.
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount),
-//   databaseURL: "https://<DATABASE_NAME>.firebaseio.com/"
-// });
+admin.initializeApp({
+   credential: admin.credential.cert(serviceAccount),
+   databaseURL: "https://madden-companion-project-default-rtdb.firebaseio.com"
+ });
 
 app.set('port', (process.env.PORT || 3001));
 
@@ -26,16 +28,24 @@ app.get('*', (req, res) => {
     res.send('Madden Companion Exporter');
 });
 
+// app.get('/roster/get', (request, response) => {
+//     res.send(cacheRosterData);
+// })
+
 app.post('/:username/:platform/:leagueId/leagueteams', (req, res) => {
     const db = admin.database();
+    console.info('database object: ', db);
+
     const ref = db.ref();
     let body = '';
     req.on('data', chunk => {
         body += chunk.toString();
+        console.info('data event:', body);
     });
     req.on('end', () => {
         const { leagueTeamInfoList: teams } = JSON.parse(body);
         const {params: { username, leagueId }} = req;
+        console.info('end', teams);
 
         teams.forEach(team => {
             const teamRef = ref.child(`data/${username}/${leagueId}/teams/${team.teamId}`);
@@ -140,6 +150,7 @@ app.post(
 // ROSTERS
 app.post('/:username/:platform/:leagueId/freeagents/roster', (req, res) => {
     const db = admin.database();
+    console.info('database object: ', db);
     const ref = db.ref();
     const {
         params: { username, leagueId, teamId }
@@ -147,9 +158,12 @@ app.post('/:username/:platform/:leagueId/freeagents/roster', (req, res) => {
     let body = '';
     req.on('data', chunk => {
         body += chunk.toString();
+        console.info('data event:', body);
+        cacheRosterData = body;
     });
     req.on('end', () => {
         const { rosterInfoList } = JSON.parse(body);
+        console.info('end', rosterInfoList);
         const dataRef = ref.child(
             `data/${username}/${leagueId}/freeagents`
         );
