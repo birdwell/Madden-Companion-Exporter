@@ -39,7 +39,7 @@ app.post('/:username/:platform/:leagueId/leagueteams', (req, res) => {
     const ref = db.ref();
     let body = '';
     req.on('data', chunk => {
-        body.push(chunk.toString());
+        body += chunk.toString();
         console.info('data event:', body);
     });
     req.on('end', () => {
