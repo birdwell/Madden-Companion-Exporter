@@ -35,11 +35,24 @@ app.get('*', (req, res) => {
 app.use(express.json());
 app.post('/:username/:platform/:leagueId/leagueteams', (req, res) => {
   const db = admin.database();
-  console.info('database object: ', db);
-
   const ref = db.ref();
-  const { leagueTeamInfoList: teams } = req.body; // Use req.body directly
+
+  // Log the entire req.body
+  console.log('req.body:', req.body);
+
+  // Check if req.body and req.body.leagueTeamInfoList are defined
+  if (!req.body || !req.body.leagueTeamInfoList) {
+    return res.status(400).send('Invalid request format. Missing leagueTeamInfoList.');
+  }
+
+  const { leagueTeamInfoList: teams } = req.body;
   const { params: { username, leagueId } } = req;
+
+  // Check if teams is an array before trying to iterate
+  if (!Array.isArray(teams)) {
+    return res.status(400).send('Invalid request format. leagueTeamInfoList must be an array.');
+  }
+
   console.info('teams', teams);
 
   teams.forEach(team => {
