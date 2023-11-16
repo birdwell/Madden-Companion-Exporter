@@ -65,7 +65,8 @@ app.post('/:username/:platform/:leagueId/leagueteams', (req, res) => {
             console.error('Error parsing JSON:', error);
             res.status(400).send('Invalid JSON format');
         }
-    });
+    });   
+});
 
 app.post('/:username/:platform/:leagueId/standings', (req, res) => {
     const db = admin.database();
