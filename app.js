@@ -32,28 +32,22 @@ app.get('*', (req, res) => {
 //     res.send(cacheRosterData);
 // })
 
+app.use(express.json());
 app.post('/:username/:platform/:leagueId/leagueteams', (req, res) => {
-    const db = admin.database();
-    console.info('database object: ', db);
+  const db = admin.database();
+  console.info('database object: ', db);
 
-    const ref = db.ref();
-    let body = '';
-    req.on('data', chunk => {
-        body += chunk.toString();
-        console.info('data event:', body);
-    });
-    req.on('end', () => {
-        const { leagueTeamInfoList: teams } = JSON.parse(body);
-        const {params: { username, leagueId }} = req;
-        console.info('end', teams);
+  const ref = db.ref();
+  const { leagueTeamInfoList: teams } = req.body; // Use req.body directly
+  const { params: { username, leagueId } } = req;
+  console.info('teams', teams);
 
-        teams.forEach(team => {
-            const teamRef = ref.child(`data/${username}/${leagueId}/teams/${team.teamId}`);
-            teamRef.set(team);
-        });
+  teams.forEach(team => {
+    const teamRef = ref.child(`data/${username}/${leagueId}/teams/${team.teamId}`);
+    teamRef.set(team);
+  });
 
-        res.sendStatus(200);
-    });
+  res.sendStatus(200);
 });
 
 app.post('/:username/:platform/:leagueId/standings', (req, res) => {
