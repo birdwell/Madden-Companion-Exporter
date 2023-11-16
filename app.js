@@ -32,46 +32,27 @@ app.get('*', (req, res) => {
 //     res.send(cacheRosterData);
 // })
 
-app.use(express.json());
 app.post('/:username/:platform/:leagueId/leagueteams', (req, res) => {
-  const db = admin.database();
-  const ref = db.ref();
+    const db = admin.database();
+    console.info('database object: ', db);
 
-  let body = '';
-
-  // Create a promise to wait for the request to finish reading
-  const requestBodyPromise = new Promise((resolve, reject) => {
+    const ref = db.ref();
+    let body = '';
     req.on('data', chunk => {
-      body += chunk.toString();
+        body += chunk.toString();
+        console.info('data event:', body);
     });
-
     req.on('end', () => {
-      resolve();
-    });
+        const { leagueTeamInfoList: teams } = JSON.parse(body);
+        const {params: { username, leagueId }} = req;
+        console.info('end', teams);
 
-    req.on('error', (err) => {
-      reject(err);
-    });
-  });
+        teams.forEach(team => {
+            const teamRef = ref.child(`data/${username}/${leagueId}/teams/${team.teamId}`);
+            teamRef.set(team);
+        });
 
-  // Wait for the promise to resolve before processing the data
-  requestBodyPromise
-    .then(() => {
-      const { leagueTeamInfoList: teams } = JSON.parse(body);
-      const { params: { username, leagueId } } = req;
-
-      console.log('teams', teams);
-
-      teams.forEach(team => {
-        const teamRef = ref.child(`data/${username}/${leagueId}/teams/${team.teamId}`);
-        teamRef.set(team);
-      });
-
-      res.sendStatus(200);
-    })
-    .catch((err) => {
-      console.error('Error reading request data:', err);
-      res.status(500).send('Internal Server Error');
+        res.sendStatus(200);
     });
 });
 
