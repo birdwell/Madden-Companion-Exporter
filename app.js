@@ -37,30 +37,42 @@ app.post('/:username/:platform/:leagueId/leagueteams', (req, res) => {
   const db = admin.database();
   const ref = db.ref();
 
-  // Log the entire req.body
-  console.log('req.body:', req.body);
+  let body = '';
 
-  // Check if req.body and req.body.leagueTeamInfoList are defined
-  if (!req.body || !req.body.leagueTeamInfoList) {
-    return res.status(400).send('Invalid request format. Missing leagueTeamInfoList.');
-  }
+  // Create a promise to wait for the request to finish reading
+  const requestBodyPromise = new Promise((resolve, reject) => {
+    req.on('data', chunk => {
+      body += chunk.toString();
+    });
 
-  const { leagueTeamInfoList: teams } = req.body;
-  const { params: { username, leagueId } } = req;
+    req.on('end', () => {
+      resolve();
+    });
 
-  // Check if teams is an array before trying to iterate
-  if (!Array.isArray(teams)) {
-    return res.status(400).send('Invalid request format. leagueTeamInfoList must be an array.');
-  }
-
-  console.info('teams', teams);
-
-  teams.forEach(team => {
-    const teamRef = ref.child(`data/${username}/${leagueId}/teams/${team.teamId}`);
-    teamRef.set(team);
+    req.on('error', (err) => {
+      reject(err);
+    });
   });
 
-  res.sendStatus(200);
+  // Wait for the promise to resolve before processing the data
+  requestBodyPromise
+    .then(() => {
+      const { leagueTeamInfoList: teams } = JSON.parse(body);
+      const { params: { username, leagueId } } = req;
+
+      console.log('teams', teams);
+
+      teams.forEach(team => {
+        const teamRef = ref.child(`data/${username}/${leagueId}/teams/${team.teamId}`);
+        teamRef.set(team);
+      });
+
+      res.sendStatus(200);
+    })
+    .catch((err) => {
+      console.error('Error reading request data:', err);
+      res.status(500).send('Internal Server Error');
+    });
 });
 
 app.post('/:username/:platform/:leagueId/standings', (req, res) => {
