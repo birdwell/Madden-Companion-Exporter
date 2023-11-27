@@ -34,18 +34,18 @@ app.get('*', (req, res) => {
 
 app.post('/:username/:platform/:leagueId/leagueteams', (req, res) => {
     const db = admin.database();
-    //console.info('database object: ', db);
+    console.info('database object: ', db);
 
     const ref = db.ref();
     let body = '';
     req.on('data', chunk => {
         body += chunk.toString();
-        //console.info('data event:', body);
+        console.info('data event:', body);
     });
     req.on('end', () => {
         const { leagueTeamInfoList: teams } = JSON.parse(body);
         const {params: { username, leagueId }} = req;
-        //console.info('end', teams);
+        console.info('end', teams);
 
         teams.forEach(team => {
             const teamRef = ref.child(`data/${username}/${leagueId}/teams/${team.teamId}`);
