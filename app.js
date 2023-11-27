@@ -128,18 +128,29 @@ app.post(
                     break;
                 }
                 default: {
-                    const property = `player${capitalizeFirstLetter(
-                        dataType
-                    )}StatInfoList`;
-                    const stats = JSON.parse(body)[property];
-                    stats.forEach(stat => {
-                        const weekRef = ref.child(
-                            `${statsPath}/${weekType}/${weekNumber}/${stat.teamId}/player-stats/${stat.rosterId}`
-                        );
-                        weekRef.set(stat);
-                    });
-                    break;
-                }
+    const property = `player${capitalizeFirstLetter(dataType)}StatInfoList`;
+
+    try {
+        const stats = JSON.parse(body)[property];
+
+        if (Array.isArray(stats)) {
+            stats.forEach(stat => {
+                const weekRef = ref.child(
+                    `${statsPath}/${weekType}/${weekNumber}/${stat.teamId}/player-stats/${stat.rosterId}`
+                );
+                weekRef.set(stat);
+            });
+        } else {
+            console.error('Expected property not found or is not an array:', property);
+            // Handle the error accordingly
+        }
+    } catch (error) {
+        console.error('Error parsing JSON or accessing property:', error);
+        // Handle the error accordingly
+    }
+    break;
+}
+
             }
 
             res.sendStatus(200);
