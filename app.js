@@ -25,20 +25,20 @@ app.set('port', (process.env.PORT || 3001));
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
-app.get('*', (req, res) => {
-    res.send('Madden Companion Exporter');
+app.get('/', (req, res) => {
+    res.send('Madden Companion Exporter processor');
 });
 
-app.post('/:username/:platform/:leagueId/leagueteams', (req, res) => {
+app.post('/:platform/:leagueId/leagueteams', (req, res) => {
     const db = admin.database();
     const ref = db.ref();
     const {
-        params: { username, leagueId },
+        params: { leagueId },
         body: { leagueTeamInfoList: teams },
     } = req;
     teams.forEach(team => {
         const teamRef = ref.child(
-            `data/${username}/${leagueId}/teams/${team.teamId}`
+            `data/${leagueId}/teams/${team.teamId}`
         );
         teamRef.update(team);
     });
@@ -46,17 +46,17 @@ app.post('/:username/:platform/:leagueId/leagueteams', (req, res) => {
     res.sendStatus(200);
     });
 
-app.post('/:username/:platform/:leagueId/standings', (req, res) => {
+app.post('/:platform/:leagueId/standings', (req, res) => {
     const db = admin.database();
     const ref = db.ref();
     const {
-        params: { username, leagueId },
+        params: { leagueId },
         body: { teamStandingInfoList: teams },
     } = req;
 
     teams.forEach(team => {
         const teamRef = ref.child(
-            `data/${username}/${leagueId}/teams/${team.teamId}`
+            `data/${leagueId}/teams/${team.teamId}`
         );
         teamRef.update(team);
     });
@@ -70,14 +70,14 @@ function capitalizeFirstLetter(string) {
 }
 
 app.post(
-    '/:username/:platform/:leagueId/week/:weekType/:weekNumber/:dataType',
+    '/:platform/:leagueId/week/:weekType/:weekNumber/:dataType',
     (req, res) => {
         const db = admin.database();
         const ref = db.ref();
         const {
-            params: { username, leagueId, weekType, weekNumber, dataType },
+            params: {  leagueId, weekType, weekNumber, dataType },
         } = req;
-        const basePath = `data/${username}/${leagueId}/`;
+        const basePath = `data/${leagueId}/`;
         // "defense", "kicking", "passing", "punting", "receiving", "rushing"
         const statsPath = `${basePath}stats`;
 
@@ -137,16 +137,16 @@ app.post(
 
 
 // ROSTERS
-app.post('/:username/:platform/:leagueId/freeagents/roster', (req, res) => {
+app.post('/:platform/:leagueId/freeagents/roster', (req, res) => {
     const db = admin.database();
     console.info('database object: ', db);
     const ref = db.ref();
     const {
-        params: { username, leagueId, teamId },
+        params: { leagueId, teamId },
         body: { rosterInfoList },
     } = req;
     const dataRef = ref.child(
-        `data/${username}/${leagueId}/teams/${teamId}/roster`
+        `data/${leagueId}/teams/${teamId}/roster`
     );
     const players = {};
     rosterInfoList.forEach(player => {
