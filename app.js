@@ -1,33 +1,32 @@
 const express = require('express');
-const admin = require('firebase-admin');
+const { getDatabase } = require('firebase-admin/database');
+// const { initializeApp, cert } = require('firebase-admin/app');
+// const serviceAccount = require('./REPLACE_WITH_SERVICE_ACCOUNT.json');
 
 const app = express();
 
-// TODO: Uncomment out line 13
+// TODO: Uncomment the imports above and initializeApp below.
 // Refer to Picture Example Folder for help for below instructions. (hit the gear for settings, click projecgt settings, then click service accounts)
 // In your firebase project settings it will give you an option to "create service account".
-// This generates a service account json file. Download it, and put the file in this project. 
+// This generates a service account json file. Download it, and put the file in this project.
 // Enter the path to your service account json file below where it says "REPLACE_WITH_SERVICE_ACCOUNT"
 // If you need more help with this step go here: https://firebase.google.com/docs/admin/setup
-
-// const serviceAccount = require("./REPLACE_WITH_SERVICE_ACCOUNT.json");
-
-// TODO: Uncomment out line 17-21
 // Enter your database url from firebase where it says <DATABASE_NAME> below.
 // Refer to picture for reference. It's the 2nd property.
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount),
+// initializeApp({
+//   credential: cert(serviceAccount),
 //   databaseURL: "https://<DATABASE_NAME>.firebaseio.com/"
 // });
 
 app.set('port', (process.env.PORT || 3001));
 
-app.get('*', (req, res) => {
+// Express 5 requires a named wildcard. `{*splat}` matches `/` and every other path.
+app.get('/{*splat}', (req, res) => {
     res.send('Madden Companion Exporter');
 });
 
 app.post('/:username/:platform/:leagueId/leagueteams', (req, res) => {
-    const db = admin.database();
+    const db = getDatabase();
     const ref = db.ref();
     let body = '';
     req.on('data', chunk => {
@@ -47,7 +46,7 @@ app.post('/:username/:platform/:leagueId/leagueteams', (req, res) => {
 });
 
 app.post('/:username/:platform/:leagueId/standings', (req, res) => {
-    const db = admin.database();
+    const db = getDatabase();
     const ref = db.ref();
     let body = '';
     req.on('data', chunk => {
@@ -75,7 +74,7 @@ function capitalizeFirstLetter(string) {
 app.post(
     '/:username/:platform/:leagueId/week/:weekType/:weekNumber/:dataType',
     (req, res) => {
-        const db = admin.database();
+        const db = getDatabase();
         const ref = db.ref();
         const {
             params: { username, leagueId, weekType, weekNumber, dataType },
@@ -139,7 +138,7 @@ app.post(
 
 // ROSTERS
 app.post('/:username/:platform/:leagueId/freeagents/roster', (req, res) => {
-    const db = admin.database();
+    const db = getDatabase();
     const ref = db.ref();
     const {
         params: { username, leagueId, teamId }
@@ -169,7 +168,7 @@ app.post('/:username/:platform/:leagueId/freeagents/roster', (req, res) => {
 });
 
 app.post('/:username/:platform/:leagueId/team/:teamId/roster', (req, res) => {
-    const db = admin.database();
+    const db = getDatabase();
     const ref = db.ref();
     const {
         params: { username, leagueId, teamId }
@@ -198,6 +197,10 @@ app.post('/:username/:platform/:leagueId/team/:teamId/roster', (req, res) => {
     });
 });
 
-app.listen(app.get('port'), () =>
-    console.log('Madden Data is running on port', app.get('port'))
-);
+if (require.main === module) {
+    app.listen(app.get('port'), () =>
+        console.log('Madden Data is running on port', app.get('port'))
+    );
+}
+
+module.exports = app;

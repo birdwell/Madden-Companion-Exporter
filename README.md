@@ -4,6 +4,8 @@ This app will export data from the Companion App to a firebase database.
 
 ## Installation
 
+Requires Node.js 22 or newer.
+
 Click Fork (located in the top right corner of the github repository). 
 After that click the green code button and then copy your url path.
 ```
